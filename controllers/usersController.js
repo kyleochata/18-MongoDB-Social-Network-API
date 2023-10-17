@@ -1,5 +1,6 @@
 const { User, Thought } = require('../models');
 
+//get all user data
 const getAllUsers = async (req, res) => {
   try {
     const getAllUsers = await User.find({})
@@ -14,6 +15,7 @@ const getAllUsers = async (req, res) => {
   }
 }
 
+//get specific user by _id
 const getOneUser = async (req, res) => {
   try {
     const getSingleUser = await User.findOne({ _id: req.params.userId })
@@ -28,6 +30,7 @@ const getOneUser = async (req, res) => {
   }
 }
 
+//creating a new user
 const createUser = async (req, res) => {
   try {
     const createUser = await User.create(
@@ -41,6 +44,7 @@ const createUser = async (req, res) => {
   }
 }
 
+//update an existing user
 const updateUser = async (req, res) => {
   try {
     const updateUser = await User.findOneAndUpdate(
@@ -59,11 +63,13 @@ const updateUser = async (req, res) => {
   }
 }
 
+//delete an existing user by _id
 const deleteUser = async (req, res) => {
   try {
-    const deleteUser = await User.deleteOne({ _id: req.params.userId });
+    const findUser = await User.findById(req.params.userId)
     //delete thoughts created by the user that was deleted
-    const deleteThoughts = await Thought.deleteMany({ _id: req.params.userId })
+    const deleteThoughts = await Thought.deleteMany({ username: findUser.username })
+    const deleteUser = await User.deleteOne({ _id: req.params.userId });
 
     !deleteUser
       ? res.status(404).json({ message: 'Sorry. No user with this id found' })
@@ -73,6 +79,7 @@ const deleteUser = async (req, res) => {
   }
 }
 
+//add an existing user as a friend to another existing user. Reciprocal adding is also included
 const addFriend = async (req, res) => {
   try {
     const addFriend = await User.findOneAndUpdate(
@@ -102,6 +109,7 @@ const addFriend = async (req, res) => {
   }
 }
 
+//delete friend from users friend array. Reciprocal removal is also completed
 const deleteFriend = async (req, res) => {
   try {
     const deleteFriend = await User.findOneAndUpdate(
