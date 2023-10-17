@@ -1,4 +1,3 @@
-const { restart } = require('nodemon');
 const { User, Thought } = require('../models');
 
 const getAllThoughts = async (req, res) => {
@@ -29,13 +28,15 @@ const createThought = async (req, res) => {
   try {
     const newThought = await Thought.create(req.body)
     const updateUserWithThought = await User.findOneAndUpdate(
-      { _id: req.body.userId },
+      { username: req.body.username },
       { $addToSet: { thoughts: newThought._id } },
       { new: true }
     )
+      .populate('thoughts')
+      .populate('friends')
 
     !updateUserWithThought
-      ? res.status(400).json({ message: 'Sorry. All thoughts could not be found' })
+      ? res.status(400).json({ message: 'Sorry. User update filed' })
       : res.status(200).json(updateUserWithThought)
   } catch (err) {
     res.status(500).json(err)
@@ -91,6 +92,9 @@ const deleteReaction = async (req, res) => {
       { $pull: { reactions: req.params.reactionId } },
       { new: true, runValidators: true }
     )
+    !deleteReaction
+      ? res.status(404).json({ message: 'No reaction with that Id found' })
+      : res.status(200).json(`reaction with the id of ${req.params.reactionId}`)
   } catch (err) {
     res.status(500).json(err)
   }

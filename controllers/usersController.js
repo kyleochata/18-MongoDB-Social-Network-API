@@ -80,11 +80,23 @@ const addFriend = async (req, res) => {
       //adding the new friend id to the array of friends
       { $push: { friends: req.params.friendId } },
       { new: true }
-    );
+    )
+      .populate('friends')
+      .populate('thoughts')
+
+    const otherFriendAdd = await User.findOneAndUpdate(
+      { _id: req.params.friendId },
+      { $push: { friends: req.params.userId } },
+      { new: true }
+    )
+      .populate('friends')
+      .populate('thoughts')
+
+    const allAdded = { addFriend, otherFriendAdd }
 
     !addFriend
       ? res.status(404).json({ message: 'No User or Friend with those ids found' })
-      : res.status(200).json(addFriend)
+      : res.status(200).json(allAdded)
   } catch (err) {
     res.status(500).json(err)
   }
@@ -95,12 +107,25 @@ const deleteFriend = async (req, res) => {
     const deleteFriend = await User.findOneAndUpdate(
       { _id: req.params.userId },
       //removing the friend with the matching id from the friends array
-      { $pull: { friends: req.params.friendId } }
-    );
+      { $pull: { friends: req.params.friendId } },
+      { new: true }
+    )
+      .populate('thoughts')
+      .populate('friends')
+
+    const deleteOtherFriend = await User.findOneAndUpdate(
+      { _id: req.params.friendId },
+      { $pull: { friends: req.params.userId } },
+      { new: true }
+    )
+      .populate('thoughts')
+      .populate('friends')
+
+    const bothDeleted = { deleteFriend, deleteOtherFriend }
 
     !deleteFriend
       ? res.status(404).json({ message: 'No user or friend with those ids found' })
-      : res.status(200).json(deleteFriend)
+      : res.status(200).json(bothDeleted)
   } catch (err) {
     res.status(500).json(err)
   }
