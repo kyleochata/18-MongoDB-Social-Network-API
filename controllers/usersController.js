@@ -1,11 +1,13 @@
 const { User, Thought } = require('../models');
 
+//if you want to have the friends prop populate with more than just the id of said friend, please uncomment the .populate('friends') found in each function.
+
 //get all user data
 const getAllUsers = async (req, res) => {
   try {
     const getAllUsers = await User.find({})
       .populate('thoughts')
-      .populate('friends')
+    // .populate('friends')
     !getAllUsers
       ? res.status(400).json({ message: 'Could not get all user data' })
       : res.status(200).json(getAllUsers)
@@ -20,7 +22,7 @@ const getOneUser = async (req, res) => {
   try {
     const getSingleUser = await User.findOne({ _id: req.params.userId })
       .populate('thoughts')
-      .populate('friends');
+    // .populate('friends');
 
     !getSingleUser
       ? res.status(404).json({ message: 'Sorry. That user was not found' })
@@ -53,7 +55,7 @@ const updateUser = async (req, res) => {
       { runValidators: true, new: true }
     )
       .populate('thoughts')
-      .populate('friends')
+    // .populate('friends')
 
     !updateUser
       ? res.status(404).json({ message: 'User with that id not found' })
@@ -73,7 +75,7 @@ const deleteUser = async (req, res) => {
 
     !deleteUser
       ? res.status(404).json({ message: 'Sorry. No user with this id found' })
-      : res.status(200).json({ message: 'User was deleted' })
+      : res.status(200).json({ message: 'User and associated thoughts deleted' })
   } catch (err) {
     res.status(500).json(err)
   }
@@ -88,7 +90,7 @@ const addFriend = async (req, res) => {
       { $push: { friends: req.params.friendId } },
       { new: true }
     )
-      .populate('friends')
+      // .populate('friends')
       .populate('thoughts')
 
     const otherFriendAdd = await User.findOneAndUpdate(
@@ -96,7 +98,7 @@ const addFriend = async (req, res) => {
       { $push: { friends: req.params.userId } },
       { new: true }
     )
-      .populate('friends')
+      // .populate('friends')
       .populate('thoughts')
 
     const allAdded = { addFriend, otherFriendAdd }

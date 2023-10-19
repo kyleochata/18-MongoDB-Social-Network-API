@@ -1,5 +1,7 @@
 const { User, Thought } = require('../models');
 
+//if you want to have the friends prop populate with more than just the id of said friend, please uncomment the .populate('friends') found in a few of the function.
+
 //get all thoughts from the db
 const getAllThoughts = async (req, res) => {
   try {
@@ -38,7 +40,7 @@ const createThought = async (req, res) => {
       { new: true }
     )
       .populate('thoughts')
-      .populate('friends')
+    // .populate('friends')
 
     !updateUserWithThought
       ? res.status(400).json({ message: 'Sorry. User update filed' })
@@ -76,7 +78,7 @@ const deleteThought = async (req, res) => {
       { new: true }
     )
       .populate('thoughts')
-      .populate('friends')
+    // .populate('friends')
 
     const removeMessage = `Thought with the id of ${req.params.thoughtId} removed`
     !removeThoughtFromUser
