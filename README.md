@@ -71,6 +71,7 @@ This repository is allowed for use in a learning environment to evaluate and ana
 ## Contributing
 
 - MongoDB for their [modules](https://www.mongodb.com/)
+- Mongoose for their [modules](https://mongoosejs.com/docs/api/model.html)
 - Express for their [modules](https://expressjs.com/)
 - nodemon for their [modules](https://www.npmjs.com/package/nodemon)
 - UCI BootCamp for the acceptance criteria.
